@@ -22,12 +22,23 @@ public class Tom {
         System.out.println("____________________________________");
         greeting();
         System.out.println("____________________________________");
+        String[] list = new String[100];
         Scanner input = new Scanner(System.in);
+        int ptr = 0;
         while(true) {
             String output = input.nextLine();
             if(!output.equalsIgnoreCase("Bye")){
                 System.out.println("____________________________________");
-                System.out.println(output);
+                if (output.equalsIgnoreCase("list")){
+                    for(int x=0; x<ptr; x++){
+                        System.out.println(x+1 + ". " + list[x]);
+                    }
+                }
+                else{
+                    System.out.println("added:" + output);
+                    list[ptr] = output;
+                    ptr++;
+                }
                 System.out.println("____________________________________");
             }
             else{
