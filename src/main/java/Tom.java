@@ -1,5 +1,3 @@
-import java.io.IOException;
-import java.util.Objects;
 import java.util.Scanner;
 
 public class Tom {
@@ -12,18 +10,19 @@ public class Tom {
         System.out.println(" Bye. Hope to see you again soon!");
     }
 
-    public static void main(String[] args) throws IOException {
-        String name = " _____                      \n"
-                    + "|_   _| ______   _________  \n"
-                    + "  | |  |  __  | |  _   _  | \n"
-                    + "  | |  | |__| | | | | | | | \n"
-                    + "  |_|  |______| |_| |_| |_| \n";
+    public static void main(String[] args){
+        String name = """
+                 _____                     \s
+                |_   _| ______   _________ \s
+                  | |  |  __  | |  _   _  |\s
+                  | |  | |__| | | | | | | |\s
+                  |_|  |______| |_| |_| |_|\s
+                """;
         System.out.println("Hello from\n" + name);
         System.out.println("____________________________________");
         greeting();
         System.out.println("____________________________________");
         Task[] list = new Task[100];
-        boolean[] marked = new boolean[100];
         Scanner input = new Scanner(System.in);
         int ptr = 0;
         while(true) {
