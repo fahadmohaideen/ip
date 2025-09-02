@@ -18,4 +18,13 @@ public class Task{
         System.out.println("OK, I've marked this task as not done yet:");
         System.out.println("   [ ] " + task);
     }
+
+    public void print(){
+        if(this.marked){
+            System.out.println(". [T][X] " + task);
+        }
+        else {
+            System.out.println(". [T][] " + task);
+        }
+    }
 }
