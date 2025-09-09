@@ -6,10 +6,10 @@ public class Deadlines extends Task{
 
     public void print(){
         if(this.marked){
-            System.out.println(". [D][X] " + task);
+            System.out.println(". [D][X] " + this.task);
         }
         else {
-            System.out.println(". [D][] " + task);
+            System.out.println(". [D][] " + this.task);
         }
     }
 }
