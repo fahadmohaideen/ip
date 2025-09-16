@@ -1,3 +1,5 @@
+package Tom.tasks;
+
 public class Task{
     protected boolean marked;
     protected String task;

@@ -1,4 +1,6 @@
-public class Event extends Task{
+package Tom.tasks;
+
+public class Event extends Task {
 
     public Event(boolean marked_as_done, String event){
         super(marked_as_done, event);

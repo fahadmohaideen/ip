@@ -1,4 +1,6 @@
-public class Deadlines extends Task{
+package Tom.tasks;
+
+public class Deadlines extends Task {
 
     public Deadlines(boolean marked_as_done, String event){
         super(marked_as_done, event);

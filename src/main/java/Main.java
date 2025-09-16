@@ -1,8 +1,10 @@
-import java.util.Arrays;
+import Tom.Tom;
+import Tom.tasks.Task;
+import Tom.exceptions.IncompleteTaskException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws IncompleteTaskException {
+    public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         Tom tom = new Tom(0, new Task[100], " ");
         tom.greeting();

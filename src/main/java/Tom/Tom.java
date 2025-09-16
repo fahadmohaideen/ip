@@ -1,5 +1,10 @@
+package Tom;
+
+import Tom.exceptions.IncompleteTaskException;
+import Tom.tasks.Task;
+import Tom.tasks.Event;
+import Tom.tasks.Deadlines;
 import java.util.Arrays;
-import java.util.Scanner;
 
 public class Tom {
     public int ptr;
@@ -13,7 +18,7 @@ public class Tom {
     }
 
     public void greeting(){
-        System.out.println(" Hello! I'm Tom");
+        System.out.println(" Hello! I'm Tom.Tom");
         System.out.println(" What can I do for you?");
         String name = """
                  _____                     \s
@@ -51,15 +56,15 @@ public class Tom {
         String[] event_tokens = this.output.split("/from | /to");
         if(from_check_tokens.length <= 1){
             if(to_check_tokens.length <= 1){
-                throw new IncompleteTaskException("Event description missing both /from and /to!");
+                throw new IncompleteTaskException("Tom.tasks.Event description missing both /from and /to!");
             }
             else{
-                throw new IncompleteTaskException("Event description missing /from");
+                throw new IncompleteTaskException("Tom.tasks.Event description missing /from");
             }
         }
         else{
             if(to_check_tokens.length <= 1){
-                throw new IncompleteTaskException("Event description missing /to!");
+                throw new IncompleteTaskException("Tom.tasks.Event description missing /to!");
             }
         }
         System.out.println("Got it. I've added this task:");
