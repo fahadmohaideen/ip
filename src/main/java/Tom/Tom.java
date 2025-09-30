@@ -1,21 +1,26 @@
 package Tom;
 
 import Tom.exceptions.IncompleteTaskException;
+import Tom.exceptions.TooManyArgumentsException;
 import Tom.tasks.Task;
 import Tom.tasks.Event;
 import Tom.tasks.Deadlines;
+
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Tom {
     public int ptr;
-    public Task[] list;
+    public ArrayList<Task> list;
     public String output;
 
-    public Tom(int ptr, Task[] list, String output){
-        this.ptr = ptr;
+    public Tom(ArrayList<Task> list, String output) throws IOException {
+        //this.ptr = ptr;
         this.list = list;
         this.output = output;
     }
+
 
     public void greeting(){
         System.out.println(" Hello! I'm Tom.Tom");
@@ -32,21 +37,23 @@ public class Tom {
         System.out.println("____________________________________");
     }
 
-    public void addTask() throws IncompleteTaskException {
+    public void addTask() throws IncompleteTaskException, IOException {
         String[] tokens = this.output.toLowerCase().split(" ");
         if(tokens.length <= 1){
             throw new IncompleteTaskException("Description of task cannot be empty!");
         }
         System.out.println("Got it. I've added this task:");
         String[] task = Arrays.copyOfRange(tokens, 1, tokens.length);
-        System.out.println("  [T][] " + String.join(" ", task));
-        this.list[this.ptr] = new Task(false, String.join(" ", task));
-        this.ptr++;
-        System.out.println("Now you have " + this.ptr + " tasks in the list.");
+        String task_description = String.join(" ", task);
+        System.out.println("  [T][] " + task_description);
+        this.list.add(new Task(false, String.join(" ", task), task_description));
+        System.out.println("Now you have " + this.list.size() + " tasks in the list.");
         System.out.println("____________________________________");
+
+
     }
 
-    public void addEvent() throws IncompleteTaskException {
+    public void addEvent() throws IncompleteTaskException, IOException {
         String[] tokens = this.output.toLowerCase().split(" ");
         if(tokens.length <= 1){
             throw new IncompleteTaskException("Description of event cannot be empty!");
@@ -71,14 +78,14 @@ public class Tom {
         String time_start = event_tokens[1];
         String time_end = event_tokens[2];
         String[] event = Arrays.copyOfRange(event_tokens[0].split(" "), 1, event_tokens[0].split(" ").length);
-        System.out.println("  [E][] " + String.join(" ", event) + " (from: " + time_start + " to: " + time_end + ")");
-        this.list[this.ptr] = new Event(false, String.join(" ", event));
-        this.ptr++;
-        System.out.println("Now you have " + this.ptr + " tasks in the list.");
+        String event_description = String.join(" ", event) + " (from: " + time_start + " to: " + time_end + ")";
+        System.out.println("  [E][] " + event_description);
+        this.list.add(new Event(false, String.join(" ", event), event_description));
+        System.out.println("Now you have " + this.list.size() + " tasks in the list.");
         System.out.println("____________________________________");
     }
 
-    public void addDeadline() throws IncompleteTaskException {
+    public void addDeadline() throws IncompleteTaskException, IOException {
         String[] tokens = this.output.toLowerCase().split(" ");
         if(tokens.length <= 1){
             throw new IncompleteTaskException("Description of deadline cannot be empty!");
@@ -90,10 +97,27 @@ public class Tom {
         System.out.println("Got it. I've added this task:");
         String end_date = deadline_tokens[1];
         String[] deadline = Arrays.copyOfRange(deadline_tokens[0].split(" "), 1, deadline_tokens[0].split(" ").length);
-        System.out.println("  [D][] " + String.join(" ", deadline) + " (by: " + end_date + ")");
-        this.list[this.ptr] = new Deadlines(false, String.join(" ", deadline));
-        this.ptr++;
-        System.out.println("Now you have " + this.ptr + " tasks in the list.");
+        String deadline_description = String.join(" ", deadline) + " (by: " + end_date + ")";
+        System.out.println("  [D][] " + deadline_description);
+        this.list.add(new Deadlines(false, String.join(" ", deadline), deadline_description));
+        System.out.println("Now you have " + this.list.size() + " tasks in the list.");
+        System.out.println("____________________________________");
+
+    }
+
+    public void delete() throws IncompleteTaskException, TooManyArgumentsException {
+        String[] tokens = this.output.toLowerCase().split(" ");
+        if(tokens.length <= 1){
+            throw new IncompleteTaskException("Specify the index you wish to delete!");
+        }
+        if(tokens.length > 2){
+            throw new TooManyArgumentsException("Too many arguments provided, maximum 2!");
+        }
+        int index = Integer.parseInt(tokens[1]);
+        System.out.println("Noted. I've removed this task:");
+        System.out.println(this.list.get(index).getDescription());
+        this.list.remove(index);
+        System.out.println("Now you have " + this.list.size() + " tasks in the list.");
         System.out.println("____________________________________");
     }
 
