@@ -1,12 +1,18 @@
 import Tom.Tom;
+import Tom.exceptions.TooManyArgumentsException;
 import Tom.tasks.Task;
 import Tom.exceptions.IncompleteTaskException;
+
+import java.io.IOException;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Scanner input = new Scanner(System.in);
-        Tom tom = new Tom(0, new Task[100], " ");
+        ArrayList<Task> task = new ArrayList<>();
+        Tom tom = new Tom(task, " ", "tom.txt");
+        tom.load();
         tom.greeting();
         while(true) {
             tom.output = input.nextLine();
@@ -17,21 +23,31 @@ public class Main {
                     tom.goodbye();
                     return;
                 case "list":
-                    for(int x=0; x<tom.ptr; x++){
+                    for(int x=0; x<tom.list.size(); x++){
                         System.out.print(x+1);
-                        tom.list[x].print();
+                        tom.list.get(x).print();
                     }
                     System.out.println("____________________________________");
                     break;
                 case "mark":
                     int index = Integer.parseInt(tokens[1]) - 1;
-                    tom.list[index].mark();
+                    tom.list.get(index).mark();
                     System.out.println("____________________________________");
                     break;
                 case "unmark":
                     int idx = Integer.parseInt(tokens[1]) - 1;
-                    tom.list[idx].unmark();
+                    tom.list.get(idx).unmark();
                     System.out.println("____________________________________");
+                    break;
+                case "delete":
+                    try {
+                        tom.delete();
+                    }
+                    catch(IndexOutOfBoundsException | IncompleteTaskException |
+                          TooManyArgumentsException | NumberFormatException e){
+                        System.out.println(e.getMessage());
+                        System.out.println("____________________________________");
+                    }
                     break;
                 case "todo":
                     try {
@@ -67,3 +83,4 @@ public class Main {
         }
     }
 }
+
