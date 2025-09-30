@@ -14,13 +14,54 @@ public class Tom {
     public int ptr;
     public ArrayList<Task> list;
     public String output;
+    public File file;
+    public FileWriter file_writer;
+    public FileReader file_reader;
 
-    public Tom(ArrayList<Task> list, String output) throws IOException {
+    public Tom(ArrayList<Task> list, String output, String filepath) throws IOException {
         //this.ptr = ptr;
         this.list = list;
         this.output = output;
+        this.file = new File(filepath);
+        if (this.file.createNewFile()) {           // Try to create the file
+            System.out.println("File created: " + this.file.getName());
+        }
+        this.file_writer = new FileWriter(filepath, true);
+        this.file_reader = new FileReader(filepath);
     }
 
+    public void load(){
+        try (BufferedReader reader = new BufferedReader(this.file_reader)) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] line_buffer = line.split("\\|");
+                this.parseLines(line_buffer);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void parseLines(String[] line){
+        String task_description;
+        switch(line[0]){
+            case "T ":
+                System.out.println(Arrays.toString(line));
+                task_description = line[2];
+                this.list.add(new Task(false, line[2], task_description));
+                break;
+            case "E ":
+                System.out.println(Arrays.toString(line));
+                task_description = line[2] + " (from: " + line[3].split("-")[0] + " to: " + line[3].split("-")[1] + ")";
+                this.list.add(new Event(false, line[2], task_description));
+                break;
+            case "D ":
+                System.out.println(Arrays.toString(line));
+                task_description = line[2] + " (by: " + line[3] + ")";
+                this.list.add(new Deadlines(false, line[2], task_description));
+                break;
+        }
+    }
 
     public void greeting(){
         System.out.println(" Hello! I'm Tom.Tom");
@@ -49,6 +90,24 @@ public class Tom {
         this.list.add(new Task(false, String.join(" ", task), task_description));
         System.out.println("Now you have " + this.list.size() + " tasks in the list.");
         System.out.println("____________________________________");
+
+        String save_line = "T |" + " " + "| " + String.join(" ", task) + "\n";
+        FileWriter file_saver = new FileWriter(this.file);
+        file_saver.write(save_line);
+        file_saver.close();
+        /*try {
+            File file = new File("tom.txt"); // Create File object
+            if (file.createNewFile()) {           // Try to create the file
+                System.out.println("File created: " + file.getName());
+            }
+            FileWriter line_writer = new FileWriter("tom.txt", true);
+            line_writer.write(save_line);
+            line_writer.close();
+
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace(); // Print error details
+        }*/
 
 
     }
@@ -83,6 +142,25 @@ public class Tom {
         this.list.add(new Event(false, String.join(" ", event), event_description));
         System.out.println("Now you have " + this.list.size() + " tasks in the list.");
         System.out.println("____________________________________");
+
+        String save_line = "E |" + " " + "| " + String.join(" ", event) +
+                " | " + time_start + "-" + time_end + "\n";
+        FileWriter file_saver = new FileWriter(this.file);
+        file_saver.write(save_line);
+        file_saver.close();
+        /*try {
+            File file = new File("tom.txt"); // Create File object
+            if (file.createNewFile()) {           // Try to create the file
+                System.out.println("File created: " + file.getName());
+            }
+            FileWriter line_writer = new FileWriter("tom.txt", true);
+            line_writer.write(save_line);
+            line_writer.close();
+
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace(); // Print error details
+        }*/
     }
 
     public void addDeadline() throws IncompleteTaskException, IOException {
@@ -103,6 +181,24 @@ public class Tom {
         System.out.println("Now you have " + this.list.size() + " tasks in the list.");
         System.out.println("____________________________________");
 
+        String save_line = "D |" + " " + "| " + String.join(" ", deadline) +
+                " | " + end_date + "\n";
+        FileWriter file_saver = new FileWriter(this.file);
+        file_saver.write(save_line);
+        file_saver.close();
+        /*try {
+            File file = new File("tom.txt"); // Create File object
+            if (file.createNewFile()) {           // Try to create the file
+                System.out.println("File created: " + file.getName());
+            }
+            FileWriter line_writer = new FileWriter("tom.txt", true);
+            line_writer.write(save_line);
+            line_writer.close();
+
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace(); // Print error details
+        }*/
     }
 
     public void delete() throws IncompleteTaskException, TooManyArgumentsException {
@@ -116,6 +212,27 @@ public class Tom {
         int index = Integer.parseInt(tokens[1]);
         System.out.println("Noted. I've removed this task:");
         System.out.println(this.list.get(index).getDescription());
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(this.file));
+            ArrayList<String> updatedLines = new ArrayList<>();
+            String line;
+            int line_num = 0;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                if(line_num != index){
+                    updatedLines.add(line);
+                }
+                line_num++;
+            }
+            FileWriter file_overwriter = new FileWriter(this.file);
+            for (String updated_line : updatedLines) {
+                file_overwriter.write(updated_line + System.lineSeparator());
+            }
+            file_overwriter.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         this.list.remove(index);
         System.out.println("Now you have " + this.list.size() + " tasks in the list.");
         System.out.println("____________________________________");

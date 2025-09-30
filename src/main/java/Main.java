@@ -11,7 +11,8 @@ public class Main {
     public static void main(String[] args) throws IOException {
         Scanner input = new Scanner(System.in);
         ArrayList<Task> task = new ArrayList<>();
-        Tom tom = new Tom(task, " ");
+        Tom tom = new Tom(task, " ", "tom.txt");
+        tom.load();
         tom.greeting();
         while(true) {
             tom.output = input.nextLine();
@@ -82,3 +83,4 @@ public class Main {
         }
     }
 }
+
