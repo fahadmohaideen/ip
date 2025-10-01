@@ -1,1 +1,5 @@
-
+T | | eat
+E |X| attending lectures | 5pm- 9pm
+E |X| cleaning house | Monday 7pm- 10pm
+D | | finishing assignment |  Tuesday 11pm
+E |X| football match | 5 Sep 9pm- 7pm

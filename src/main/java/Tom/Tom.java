@@ -1,36 +1,59 @@
 package Tom;
 
+import Tom.commands.Command;
+import Tom.commands.ExitCommand;
+import Tom.data_operations.Storage;
 import Tom.exceptions.IncompleteTaskException;
 import Tom.exceptions.TooManyArgumentsException;
-import Tom.tasks.Task;
-import Tom.tasks.Event;
-import Tom.tasks.Deadlines;
+import Tom.data_operations.TaskList;
+import Tom.io.Parser;
+import Tom.io.Ui;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Tom {
-    public int ptr;
+    /*public int ptr;
     public ArrayList<Task> list;
     public String output;
     public File file;
     public FileWriter file_writer;
-    public FileReader file_reader;
+    public FileReader file_reader;*/
+    public Ui ui;
+    public TaskList task_list;
+    public Storage storage;
 
-    public Tom(ArrayList<Task> list, String output, String filepath) throws IOException {
+    public Tom(Ui ui, TaskList task_list, Storage storage) throws IOException {
         //this.ptr = ptr;
-        this.list = list;
+        /*this.list = list;
         this.output = output;
         this.file = new File(filepath);
         if (this.file.createNewFile()) {           // Try to create the file
             System.out.println("File created: " + this.file.getName());
         }
         this.file_writer = new FileWriter(filepath, true);
-        this.file_reader = new FileReader(filepath);
+        this.file_reader = new FileReader(filepath);*/
+        this.ui = ui;
+        this.task_list = task_list;
+        this.storage = storage;
     }
 
-    public void load(){
+    public void run() throws IncompleteTaskException, TooManyArgumentsException, IOException {
+        ui.greeting();
+        this.storage.load(this.task_list);
+        boolean is_running = true;
+        while(is_running){
+            String line_read = this.ui.readCommand();
+            Command command = Parser.parser(line_read, this.ui);
+            if (command != null) {
+                command.execute(this.task_list, this.ui, this.storage);
+            }
+            if(command instanceof ExitCommand){
+                is_running = false;
+            }
+        }
+    }
+
+    /*public void load(){
         try (BufferedReader reader = new BufferedReader(this.file_reader)) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -95,19 +118,6 @@ public class Tom {
         FileWriter file_saver = new FileWriter(this.file);
         file_saver.write(save_line);
         file_saver.close();
-        /*try {
-            File file = new File("tom.txt"); // Create File object
-            if (file.createNewFile()) {           // Try to create the file
-                System.out.println("File created: " + file.getName());
-            }
-            FileWriter line_writer = new FileWriter("tom.txt", true);
-            line_writer.write(save_line);
-            line_writer.close();
-
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace(); // Print error details
-        }*/
 
 
     }
@@ -148,19 +158,6 @@ public class Tom {
         FileWriter file_saver = new FileWriter(this.file);
         file_saver.write(save_line);
         file_saver.close();
-        /*try {
-            File file = new File("tom.txt"); // Create File object
-            if (file.createNewFile()) {           // Try to create the file
-                System.out.println("File created: " + file.getName());
-            }
-            FileWriter line_writer = new FileWriter("tom.txt", true);
-            line_writer.write(save_line);
-            line_writer.close();
-
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace(); // Print error details
-        }*/
     }
 
     public void addDeadline() throws IncompleteTaskException, IOException {
@@ -186,19 +183,6 @@ public class Tom {
         FileWriter file_saver = new FileWriter(this.file);
         file_saver.write(save_line);
         file_saver.close();
-        /*try {
-            File file = new File("tom.txt"); // Create File object
-            if (file.createNewFile()) {           // Try to create the file
-                System.out.println("File created: " + file.getName());
-            }
-            FileWriter line_writer = new FileWriter("tom.txt", true);
-            line_writer.write(save_line);
-            line_writer.close();
-
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace(); // Print error details
-        }*/
     }
 
     public void delete() throws IncompleteTaskException, TooManyArgumentsException {
@@ -240,5 +224,6 @@ public class Tom {
 
     public void goodbye(){
         System.out.println(" Bye. Hope to see you again soon!");
-    }
+    }*/
+
 }

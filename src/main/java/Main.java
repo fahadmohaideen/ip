@@ -1,15 +1,23 @@
 import Tom.Tom;
+import Tom.io.Ui;
+import Tom.data_operations.TaskList;
+import Tom.data_operations.Storage;
 import Tom.exceptions.TooManyArgumentsException;
 import Tom.tasks.Task;
 import Tom.exceptions.IncompleteTaskException;
 
 import java.io.IOException;
-import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        Scanner input = new Scanner(System.in);
+    public static void main(String[] args) throws IOException, IncompleteTaskException, TooManyArgumentsException {
+        Ui ui = new Ui();
+        ArrayList<Task> list_of_tasks = new ArrayList<>();
+        TaskList task_list = new TaskList(list_of_tasks);
+        Storage storage = new Storage("tom.txt");
+        Tom tom = new Tom(ui, task_list, storage);
+        tom.run();
+        /*Scanner input = new Scanner(System.in);
         ArrayList<Task> task = new ArrayList<>();
         Tom tom = new Tom(task, " ", "tom.txt");
         tom.load();
@@ -80,7 +88,7 @@ public class Main {
                     System.out.println("Unknown command!");
                     System.out.println("____________________________________");
             }
-        }
+        }*/
     }
 }
 
