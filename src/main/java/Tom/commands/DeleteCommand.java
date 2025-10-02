@@ -7,8 +7,13 @@ import Tom.exceptions.IncompleteTaskException;
 import Tom.exceptions.TooManyArgumentsException;
 
 public class DeleteCommand extends Command {
+    protected int index;
+
+    public DeleteCommand(int index){
+        this.index = index;
+    }
 
     public void execute(TaskList task, Ui ui, Storage storage) throws IncompleteTaskException, TooManyArgumentsException {
-        task.delete(ui, storage);
+        task.delete(this.index, storage);
     }
 }

@@ -22,7 +22,7 @@ public class Tom {
     public TaskList task_list;
     public Storage storage;
 
-    public Tom(Ui ui, TaskList task_list, Storage storage) throws IOException {
+    public Tom(Ui ui, TaskList task_list, Storage storage){
         //this.ptr = ptr;
         /*this.list = list;
         this.output = output;
@@ -37,18 +37,26 @@ public class Tom {
         this.storage = storage;
     }
 
-    public void run() throws IncompleteTaskException, TooManyArgumentsException, IOException {
+    public void run(){
         ui.greeting();
         this.storage.load(this.task_list);
         boolean is_running = true;
         while(is_running){
-            String line_read = this.ui.readCommand();
-            Command command = Parser.parser(line_read, this.ui);
-            if (command != null) {
-                command.execute(this.task_list, this.ui, this.storage);
-            }
-            if(command instanceof ExitCommand){
-                is_running = false;
+            try {
+                String line_read = this.ui.readCommand();
+                Parser cmd_parser = new Parser();
+                Command command = cmd_parser.parser(line_read, this.ui);
+                if (command != null) {
+                    command.execute(this.task_list, this.ui, this.storage);
+                    this.ui.showLine();
+                }
+                if (command instanceof ExitCommand) {
+                    is_running = false;
+                }
+            } catch (IndexOutOfBoundsException | IncompleteTaskException |
+                    TooManyArgumentsException | NumberFormatException | IOException e){
+                ui.showError(e.getMessage());
+                this.ui.showLine();
             }
         }
     }

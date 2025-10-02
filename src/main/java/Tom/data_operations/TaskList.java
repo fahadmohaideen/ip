@@ -10,8 +10,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.PriorityQueue;
 
 public class TaskList {
     protected ArrayList<Task> list;
@@ -20,91 +22,33 @@ public class TaskList {
         this.list = list;
     }
 
-    public void addTask(Ui ui, Storage storage) throws IncompleteTaskException, IOException {
-        String[] tokens = ui.output.toLowerCase().split(" ");
-        if(tokens.length <= 1){
-            throw new IncompleteTaskException("Description of task cannot be empty!");
-        }
-        System.out.println("Got it. I've added this task:");
-        String[] task = Arrays.copyOfRange(tokens, 1, tokens.length);
-        String task_description = String.join(" ", task);
-        System.out.println("  [T][] " + task_description);
-        this.list.add(new Task(false, String.join(" ", task), task_description));
+    public void addTask(String task, String task_description, Storage storage, LocalDateTime start, LocalDateTime end) throws IncompleteTaskException, IOException {
+        this.list.add(new Task(false, task, task_description, start, end));
         System.out.println("Now you have " + this.list.size() + " tasks in the list.");
-        ui.showLine();
-
-        String save_line = "T |" + " " + "| " + String.join(" ", task) + "\n";
+        String save_line = "T |" + " " + "| " + task + "\n";
         storage.save(save_line);
     }
 
-    public void addEvent(Ui ui, Storage storage) throws IncompleteTaskException, IOException {
-        String[] tokens = ui.output.toLowerCase().split(" ");
-        if(tokens.length <= 1){
-            throw new IncompleteTaskException("Description of event cannot be empty!");
-        }
-        String[] from_check_tokens = ui.output.split("/from");
-        String[] to_check_tokens = ui.output.split("/to");
-        String[] event_tokens = ui.output.split("/from | /to");
-        if(from_check_tokens.length <= 1){
-            if(to_check_tokens.length <= 1){
-                throw new IncompleteTaskException("Tom.tasks.Event description missing both /from and /to!");
-            }
-            else{
-                throw new IncompleteTaskException("Tom.tasks.Event description missing /from");
-            }
-        }
-        else{
-            if(to_check_tokens.length <= 1){
-                throw new IncompleteTaskException("Tom.tasks.Event description missing /to!");
-            }
-        }
-        System.out.println("Got it. I've added this task:");
-        String time_start = event_tokens[1];
-        String time_end = event_tokens[2];
-        String[] event = Arrays.copyOfRange(event_tokens[0].split(" "), 1, event_tokens[0].split(" ").length);
-        String event_description = String.join(" ", event) + " (from: " + time_start + " to: " + time_end + ")";
-        System.out.println("  [E][] " + event_description);
-        this.list.add(new Event(false, String.join(" ", event), event_description));
+    public void addEvent(String event, String event_description, Storage storage, LocalDateTime start, LocalDateTime end) throws IncompleteTaskException, IOException {
+        this.list.add(new Event(false, event, event_description, start, end));
         System.out.println("Now you have " + this.list.size() + " tasks in the list.");
-        ui.showLine();
-
-        String save_line = "E |" + " " + "| " + String.join(" ", event) +
+        String time_start = event_description.split("from:|to:|[()]")[2];
+        String time_end = event_description.split("from:|to:|[()]")[3];
+        String save_line = "E |" + " " + "| " + event +
                 " | " + time_start + "-" + time_end + "\n";
         storage.save(save_line);
     }
 
-    public void addDeadline(Ui ui, Storage storage) throws IncompleteTaskException, IOException {
-        String[] tokens = ui.output.toLowerCase().split(" ");
-        if(tokens.length <= 1){
-            throw new IncompleteTaskException("Description of deadline cannot be empty!");
-        }
-        String[] deadline_tokens = ui.output.split("/by");
-        if(deadline_tokens.length <= 1){
-            throw new IncompleteTaskException("Deadline description missing /by!");
-        }
-        System.out.println("Got it. I've added this task:");
-        String end_date = deadline_tokens[1];
-        String[] deadline = Arrays.copyOfRange(deadline_tokens[0].split(" "), 1, deadline_tokens[0].split(" ").length);
-        String deadline_description = String.join(" ", deadline) + " (by: " + end_date + ")";
-        System.out.println("  [D][] " + deadline_description);
-        this.list.add(new Deadlines(false, String.join(" ", deadline), deadline_description));
+    public void addDeadline(String deadline, String deadline_description, Storage storage, LocalDateTime start, LocalDateTime end) throws IncompleteTaskException, IOException {
+        this.list.add(new Deadlines(false, deadline, deadline_description, start, end));
         System.out.println("Now you have " + this.list.size() + " tasks in the list.");
-        ui.showLine();
-
-        String save_line = "D |" + " " + "| " + String.join(" ", deadline) +
+        String end_date = deadline_description.split("by: |[()]")[2];
+        String save_line = "D |" + " " + "| " + deadline +
                 " | " + end_date + "\n";
         storage.save(save_line);
     }
 
-    public void delete(Ui ui, Storage storage) throws IncompleteTaskException, TooManyArgumentsException {
-        String[] tokens = ui.output.toLowerCase().split(" ");
-        if(tokens.length <= 1){
-            throw new IncompleteTaskException("Specify the index you wish to delete!");
-        }
-        if(tokens.length > 2){
-            throw new TooManyArgumentsException("Too many arguments provided, maximum 2!");
-        }
-        int index = Integer.parseInt(tokens[1]) - 1;
+    public void delete(int index, Storage storage) throws IncompleteTaskException, TooManyArgumentsException {
         System.out.println("Noted. I've removed this task:");
         System.out.println(this.list.get(index).getDescription());
         try {
@@ -126,11 +70,10 @@ public class TaskList {
             file_overwriter.close();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
         this.list.remove(index);
         System.out.println("Now you have " + this.list.size() + " tasks in the list.");
-        System.out.println("____________________________________");
     }
 
     public void mark_task(boolean mark, int index){
@@ -166,7 +109,7 @@ public class TaskList {
             file_overwriter.close();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -176,6 +119,20 @@ public class TaskList {
             this.list.get(x).print();
         }
         ui.showLine();
+    }
+
+    public void search_by_date(LocalDateTime date_time){
+        for(int x=0; x<this.list.size(); x++){
+            Task curr_task = this.list.get(x);
+            if(curr_task.end != null){
+                if((curr_task.start == null) && (date_time.toLocalDate().equals(curr_task.end.toLocalDate()))){
+                    System.out.println(curr_task.getDescription());
+                }
+                if((curr_task.start != null) && (date_time.isAfter(curr_task.start) && date_time.isBefore(curr_task.end))){
+                    System.out.println(curr_task.getDescription());
+                }
+            }
+        }
     }
 
 }

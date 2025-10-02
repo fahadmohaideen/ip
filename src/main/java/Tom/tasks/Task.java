@@ -1,14 +1,20 @@
 package Tom.tasks;
 
+import java.time.LocalDateTime;
+
 public class Task{
     protected boolean marked;
     protected String task;
     protected String task_description;
+    public LocalDateTime start;
+    public LocalDateTime end;
 
-    public Task(boolean marked_as_done, String task_name, String description){
-        marked = marked_as_done;
-        task = task_name;
-        task_description = description;
+    public Task(boolean marked_as_done, String task_name, String description, LocalDateTime start, LocalDateTime end){
+        this.marked = marked_as_done;
+        this.task = task_name;
+        this.task_description = description;
+        this.start = start;
+        this.end = end;
     }
 
     public void mark(){
@@ -25,14 +31,21 @@ public class Task{
 
     public void print(){
         if(this.marked){
-            System.out.println(". [T][X] " + this.task_description);
+            System.out.println(". [T][X] " + this.task + this.task_description);
         }
         else {
-            System.out.println(". [T][] " + this.task_description);
+            System.out.println(". [T][] " + this.task + this.task_description);
         }
     }
 
     public String getDescription(){
-        return this.task_description;
+        String description;
+        if(this.marked){
+            description = "[T][X] " + this.task + this.task_description;
+        }
+        else{
+            description = "[T][] " + this.task + this.task_description;
+        }
+        return description;
     }
 }
