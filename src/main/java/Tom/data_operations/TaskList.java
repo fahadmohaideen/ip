@@ -128,11 +128,27 @@ public class TaskList {
                 if((curr_task.start == null) && (date_time.toLocalDate().equals(curr_task.end.toLocalDate()))){
                     System.out.println(curr_task.getDescription());
                 }
-                if((curr_task.start != null) && (date_time.isAfter(curr_task.start) && date_time.isBefore(curr_task.end))){
+                else if((curr_task.start != null) && (date_time.isAfter(curr_task.start) && date_time.isBefore(curr_task.end))) {
                     System.out.println(curr_task.getDescription());
+                }
+                else{
+                    System.out.println("There are no events/deadlines at this time!");
                 }
             }
         }
     }
 
+    public void search_by_keyword(String keyword) {
+        boolean matched = false;
+        for(int x=0; x<this.list.size(); x++){
+            Task curr_task = this.list.get(x);
+            if(curr_task.task.contains(keyword)){
+                System.out.println(curr_task.getDescription());
+                matched = true;
+            }
+        }
+        if(!matched){
+            System.out.println("There are no matching tasks!");
+        }
+    }
 }

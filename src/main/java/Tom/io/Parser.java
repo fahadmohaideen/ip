@@ -17,7 +17,7 @@ public class Parser {
             case "bye":
                 return new ExitCommand();
             case "list":
-                return new ListCommand("list_task", null);
+                return new ListCommand("list_task", null, null);
             case "mark":
                 return new MarkCommand(true);
             case "unmark":
@@ -32,11 +32,24 @@ public class Parser {
                 return this.parse_deadline(cmd_text);
             case "search_by_date":
                 return this.parse_search_date(cmd_text);
+            case "search_by_keyword":
+                return this.parse_search_keyword(cmd_text);
             default:
                 System.out.println("Unknown command!");
                 ui.showLine();
                 return null;
         }
+    }
+
+    private Command parse_search_keyword(String line_read) throws IncompleteTaskException {
+        String[] tokens = line_read.toLowerCase().split(" ");
+        if(tokens.length == 1){
+            throw new IncompleteTaskException("Description of keyword search cannot be empty!");
+        }
+        System.out.println("Here are the tasks matching your keyword search:");
+        String[] keyword_array = Arrays.copyOfRange(tokens, 1, tokens.length);
+        String keyword = String.join(" ", keyword_array);
+        return new ListCommand("search_by_keyword", null, keyword);
     }
 
     private Command parse_search_date(String line_read) throws IncompleteTaskException {
@@ -47,7 +60,7 @@ public class Parser {
         System.out.println("Here are the events occurring/deadlines due on this date:");
         String date_time_str = tokens[1] + " " + tokens[2];
         LocalDateTime search_date = this.parse_dateTime(date_time_str, "dd/MM/yyyy HHmm");
-        return new ListCommand("search_by_date", search_date);
+        return new ListCommand("search_by_date", search_date, null);
     }
 
     public Command parse_task(String line_read) throws IncompleteTaskException {

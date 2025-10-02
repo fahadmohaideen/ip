@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class Task{
     protected boolean marked;
-    protected String task;
+    public String task;
     protected String task_description;
     public LocalDateTime start;
     public LocalDateTime end;
