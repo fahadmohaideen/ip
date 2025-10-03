@@ -1,5 +1,4 @@
 package Tom.io;
-
 import java.util.Scanner;
 
 public class Ui {
